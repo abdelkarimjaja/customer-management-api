@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\CustomerResource;
 use App\Http\Resources\V1\CustomerCollection;
 #use App\Services\V1\CustomerQuery;
-use App\Services\V1\CustomerQuery;
+use App\Filters\V1\CustomerFilter;
 
 class CustomerController extends Controller
 {
@@ -20,14 +20,18 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         //
-	    $filter = new CustomerQuery();
-	    $queryItems = $filter->transform($request);
+	    $filter = new CustomerFilter();
+	    $filterItems = $filter->transform($request);
+	    
+	    $includeInvoices = $request->query('includeInvoices');
 
-	    if(count($queryItems) == 0){
-	    return new CustomerCollection(Customer::paginate());
-	    } else {
-		    return new CustomerCollection(Customer::where($queryItems)->paginate());
+	    $customers = Customer::where($filterItems);
+
+	    if($includeInvoices) {
+		    $customers =$customers->with('invoices');
 	    }
+	    return new CustomerCollection($customers->paginate()->appends($request->query()));
+
 
 
     }
@@ -55,6 +59,12 @@ class CustomerController extends Controller
     {
         //
 	//	    return $customer;
+	    $includeInvoices = request()->query('includeInvoices');
+
+	    if($includeInvoices) {
+		    return new CustomerResource($customer->LoadMissing('invoices'));
+	    }
+
 	    return new CustomerResource($customer);
     }
 
