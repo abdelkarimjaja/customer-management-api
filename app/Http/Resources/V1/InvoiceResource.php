@@ -13,24 +13,22 @@ class InvoiceResource extends JsonResource
      * @return array<string, mixed>
      */
 
-	/**
-	 * invoices tables columns name:
-	 *  customer_id
-	 *  amount  
-	 *  status 
-	 *  billed_date
-	 *  paid_date
-	 *
-	 */
+    /**
+     * invoices tables columns name:
+     *  customer_id
+     *  amount
+     *  status
+     *  billed_date
+     *  paid_date
+     */
     public function toArray(Request $request): array
     {
-	    return [
-		    'id'=> $this->id,
-		    'customerId'=> $this->customer_id,
-		    'status'=> $this->status,
-		    'billedDate'=> $this->billed_date,
-		    'paidDate'=> $this->paid_date,
-	    ];
+        return [
+            'id' => $this->id,
+            'customerId' => $this->customer_id,
+            'status' => $this->status,
+            'billedDate' => $this->billed_date,
+            'paidDate' => $this->paid_date,
+        ];
     }
-
 }

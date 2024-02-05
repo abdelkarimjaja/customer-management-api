@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,59 +14,53 @@ use App\Models\User;
 |
 */
 
-
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/setup', function() {
-	$credentials = [ 
-		'email' => 'admin@admin.com', 
-		'password' => 'password'
-	];
+Route::get('/setup', function () {
+    $credentials = [
+        'email' => 'admin@admin.com',
+        'password' => 'password',
+    ];
 
-	if(!Auth::attempt($credentials)){
-		$user = new User();
+    if (! Auth::attempt($credentials)) {
+        $user = new User();
 
-		$user->name = 'Admin';
-		$user->email =$credentials['email'];
-		$user->password = Hash::make($credentials['password']);
+        $user->name = 'Admin';
+        $user->email = $credentials['email'];
+        $user->password = Hash::make($credentials['password']);
 
-		$user->save();
+        $user->save();
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+
+            $adminToken = $user->createToken('admin-token', ['create', 'update', 'delete']);
+            $updateToken = $user->createToken('update-token', ['create', 'update']);
+            $basicToken = $user->createToken('basic-token');
+
+            return [
+                'admin' => $adminToken->plainTextToken,
+                'update' => $updateToken->plainTextToken,
+                'basic' => $basicToken->plainTextToken,
+            ];
+            //$tokens =  "<p>
+            //admin: $adminToken->plainTextToken<br>
+            //	update:$updateToken->plainTextToken<br>
+            //		basic: $basicToken->plainTextToken</p>";
+            //dd($tokens);
+            //return $tokens;
+
+            /*			return response()->json([
+                                'admin' => $adminToken->plainTextToken,
+                                    'update' => $updateToken->plainTextToken,
+                                    'basic' => $basicToken->plainTextToken,
+                        ]);
 
 
-		if(Auth::attempt($credentials)){
-			$user = Auth::user();
-			
-			$adminToken = $user->createToken('admin-token', ['create', 'update', 'delete']);
-			$updateToken = $user->createToken('update-token', ['create', 'update']);
-			$basicToken = $user->createToken('basic-token');
-			
-		return [
-			'admin' => $adminToken->plainTextToken,
-			'update' => $updateToken->plainTextToken,
-			'basic' => $basicToken->plainTextToken,
-			];
-		//$tokens =  "<p>
-	//admin: $adminToken->plainTextToken<br>
-	//	update:$updateToken->plainTextToken<br>
-//		basic: $basicToken->plainTextToken</p>";
-//dd($tokens);
-//return $tokens;
+                    }*/
 
-/*			return response()->json([
-				    'admin' => $adminToken->plainTextToken,
-				        'update' => $updateToken->plainTextToken,
-					    'basic' => $basicToken->plainTextToken,
-			]);
-
-
-		}*/
-
-		}
-	}
+        }
+    }
 });
-
-
-
-

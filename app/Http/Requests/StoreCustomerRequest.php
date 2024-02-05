@@ -13,7 +13,7 @@ class StoreCustomerRequest extends FormRequest
     public function authorize(): bool
     {
 
-	    $user = $this->user();
+        $user = $this->user();
 
         return $user != null && $user->tokenCan('create');
     }
@@ -25,27 +25,24 @@ class StoreCustomerRequest extends FormRequest
      */
 
     /**
-     *
-	    $table->string('name');
-	    $table->string('type');
-	    $table->string('email');
-	    $table->string('address');
-	    $table->string('city');
-	    $table->string('state');
-	    $table->string('postal_code');
-     *
-     *
+        $table->string('name');
+        $table->string('type');
+        $table->string('email');
+        $table->string('address');
+        $table->string('city');
+        $table->string('state');
+        $table->string('postal_code');
      */
     public function rules(): array
     {
         return [
-		'name' => ['required'],
-		'type' => ['required', Rule::in(['I', 'B', 'i', 'b'])],
-		'email' => ['required','email'],
-		'address' => ['required'],
-		'city' => ['required'],
-		'state' => ['required'],
-		'postalCode' => ['required'],
+            'name' => ['required'],
+            'type' => ['required', Rule::in(['I', 'B', 'i', 'b'])],
+            'email' => ['required', 'email'],
+            'address' => ['required'],
+            'city' => ['required'],
+            'state' => ['required'],
+            'postalCode' => ['required'],
 
         ];
     }
@@ -53,10 +50,10 @@ class StoreCustomerRequest extends FormRequest
     /**
      * Allow to merge other values such as postal_code.gt
      */
-    protected function prepareForValidation(){
-	    $this->merge([
-		    'postal_code' => $this->postalCode
-	    ]);
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'postal_code' => $this->postalCode,
+        ]);
     }
 }
-

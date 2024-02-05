@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Filters\V1\CustomerFilter;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
-use App\Models\Customer;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\V1\CustomerResource;
 use App\Http\Resources\V1\CustomerCollection;
-#use App\Services\V1\CustomerQuery;
-use App\Filters\V1\CustomerFilter;
+use App\Http\Resources\V1\CustomerResource;
+use App\Models\Customer;
+//use App\Services\V1\CustomerQuery;
+use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
@@ -20,19 +20,18 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         //
-	    $filter = new CustomerFilter();
-	    $filterItems = $filter->transform($request);
-	    
-	    $includeInvoices = $request->query('includeInvoices');
+        $filter = new CustomerFilter();
+        $filterItems = $filter->transform($request);
 
-	    $customers = Customer::where($filterItems);
+        $includeInvoices = $request->query('includeInvoices');
 
-	    if($includeInvoices) {
-		    $customers =$customers->with('invoices');
-	    }
-	    return new CustomerCollection($customers->paginate()->appends($request->query()));
+        $customers = Customer::where($filterItems);
 
+        if ($includeInvoices) {
+            $customers = $customers->with('invoices');
+        }
 
+        return new CustomerCollection($customers->paginate()->appends($request->query()));
 
     }
 
@@ -49,9 +48,8 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
-	    return new CustomerResource(Customer::create($request->all()));
+        return new CustomerResource(Customer::create($request->all()));
     }
-
 
     /**
      * Display the specified resource.
@@ -59,14 +57,14 @@ class CustomerController extends Controller
     public function show(Customer $customer)
     {
         //
-	//	    return $customer;
-	    $includeInvoices = request()->query('includeInvoices');
+        //	    return $customer;
+        $includeInvoices = request()->query('includeInvoices');
 
-	    if($includeInvoices) {
-		    return new CustomerResource($customer->LoadMissing('invoices'));
-	    }
+        if ($includeInvoices) {
+            return new CustomerResource($customer->LoadMissing('invoices'));
+        }
 
-	    return new CustomerResource($customer);
+        return new CustomerResource($customer);
     }
 
     /**
@@ -83,7 +81,7 @@ class CustomerController extends Controller
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
         //
-	   $customer->update($request->all()); 
+        $customer->update($request->all());
     }
 
     /**
