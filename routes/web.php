@@ -18,9 +18,6 @@ use App\Models\User;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/i', function () {
-	return "<b>Hello World!</b>";
-});
 
 Route::get('/setup', function() {
 	$credentials = [ 
@@ -43,7 +40,7 @@ Route::get('/setup', function() {
 			
 			$adminToken = $user->createToken('admin-token', ['create', 'update', 'delete']);
 			$updateToken = $user->createToken('update-token', ['create', 'update']);
-			$basicToken = $user->createToken('bashic-token');
+			$basicToken = $user->createToken('basic-token');
 			
 		return [
 			'admin' => $adminToken->plainTextToken,
